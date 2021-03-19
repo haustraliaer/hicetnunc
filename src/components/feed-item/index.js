@@ -16,13 +16,17 @@ export const FeedItem = ({
   const { mimeType, uri } = token_info.formats[0]
   return (
     <Container>
-      <Button to={`${PATH.OBJKT}/${token_id}`}>
-        <div className={styles.container}>
-          {renderMediaType({ mimeType, uri: uri.split('//')[1] })}
+      <div className={styles.hiccup}>
+        <div className={styles.child}>
+          <Button to={`${PATH.OBJKT}/${token_id}`}>
+            <div className={styles.container}>
+              {renderMediaType({ mimeType, uri: uri.split('//')[1] })}
+            </div>
+          </Button>
         </div>
-      </Button>
+      </div>
       <Padding>
-                 <ItemInfo
+        <ItemInfo
           token_info={token_info}
           owners={owners}
           token_id={token_id}

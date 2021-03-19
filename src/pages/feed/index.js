@@ -1,6 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
+
+import { FixedSizeGrid as Grid } from 'react-window'
+import InfiniteLoader from 'react-window-infinite-loader'
+import AutoSizer from 'react-virtualized-auto-sizer'
+
 import { GetFeed, GethDAOFeed } from '../../data/api'
 import { Page, Container, Padding } from '../../components/layout'
 import { FeedItem } from '../../components/feed-item'
@@ -72,6 +77,33 @@ export const Feed = () => {
     setHasMore(true)
   }
 
+  const columnCount = 3
+  const itemCount = hasMore ? items.length + 1 : items.length
+  const isItemLoaded = (index) => !hasMore || index < items.length
+
+  // Render an item or a loading indicator.
+  const Item = ({ columnIndex, rowIndex, style }) => {
+    const index = rowIndex * columnCount + columnIndex
+
+    let content
+    if (!isItemLoaded(index)) {
+      content = (
+        <Container>
+          <Padding>
+            <div className={styles.container}>
+              <Loading />
+            </div>
+          </Padding>
+        </Container>
+      )
+    } else {
+      const item = items[index]
+      content = <FeedItem key={`${item.token_id}-${index}`} {...item} />
+    }
+
+    return <div style={style}>{content}</div>
+  }
+
   return (
     <Page>
       {false && (
@@ -86,37 +118,42 @@ export const Feed = () => {
           </div>
         </div>
       )}
-
-      <InfiniteScroll
-        dataLength={items.length}
-        next={loadMore}
-        hasMore={hasMore}
-        loader={
-          <Container>
-            <Padding>
-              <div className={styles.container}>
-                <Loading />
-              </div>
-            </Padding>
-          </Container>
-        }
-        endMessage={
-          <Container>
-            <Padding>
-              <p>
-                mint mint mint{' '}
-                <span role="img" aria-labelledby={'Sparkles emoji'}>
-                  ✨
-                </span>
-              </p>
-            </Padding>
-          </Container>
-        }
-      >
-        {items.map((item, index) => (
-          <FeedItem key={`${item.token_id}-${index}`} {...item} />
-        ))}
-      </InfiniteScroll>
+      <AutoSizer>
+        {({ height, width }) => (
+          <InfiniteLoader
+            isItemLoaded={isItemLoaded}
+            itemCount={itemCount}
+            loadMoreItems={
+              () => console.log('this aint workin') // loadMore
+            }
+          >
+            {({ onItemsRendered, ref }) => (
+              <Grid
+                columnCount={columnCount}
+                columnWidth={230}
+                height={height}
+                rowCount={itemCount}
+                rowHeight={300}
+                width={width}
+              >
+                {Item}
+              </Grid>
+            )}
+          </InfiniteLoader>
+        )}
+      </AutoSizer>
     </Page>
   )
 }
+
+// <List
+//   className="List"
+//   height={height}
+//   itemCount={itemCount}
+//   itemSize={500}
+//   onItemsRendered={onItemsRendered}
+//   ref={ref}
+//   width={width}
+// >
+//   {Item}
+// </List>
