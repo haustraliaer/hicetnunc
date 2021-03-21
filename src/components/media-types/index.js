@@ -4,6 +4,7 @@ import { ImageComponent } from './image'
 import { VideoComponent } from './video'
 import { AudioComponent } from './audio'
 import { VectorComponent } from './vector'
+// import { HTMLComponent } from './html'
 import { UnknownComponent } from './unknown'
 import { MIMETYPE } from '../../constants'
 
@@ -15,6 +16,7 @@ export const renderMediaType = ({
   uri,
   interactive = false,
   preview = false,
+  metadata,
 }) => {
   const path = uri
   let url
@@ -32,7 +34,26 @@ export const renderMediaType = ({
     /* VECTOR */
     case MIMETYPE.SVG:
       url = preview ? uri : `${CLOUDFLARE}${path}`
-      return <VectorComponent src={url} interactive={interactive} />
+      return (
+        <VectorComponent
+          {...metadata}
+          src={url}
+          interactive={interactive}
+          preview={preview}
+        />
+      )
+    /* HTML */
+    // Temp disabled by andre until approval
+    // case MIMETYPE.HTML:
+    //   url = preview ? uri : `${CLOUDFLARE}${path}`
+    //   return (
+    //     <HTMLComponent
+    //       {...metadata}
+    //       src={url}
+    //       interactive={interactive}
+    //       preview={preview}
+    //     />
+    //   )
     /* VIDEOS */
     case MIMETYPE.MP4:
     case MIMETYPE.OGV:
@@ -45,6 +66,7 @@ export const renderMediaType = ({
     case MIMETYPE.GLB:
       url = preview ? uri : `${CLOUDFLARE}${path}`
       return <GLBComponent src={url} interactive={interactive} />
+    /* AUDIO */
     case MIMETYPE.MP3:
     case MIMETYPE.OGA:
       url = preview ? uri : `${CLOUDFLARE}${path}`
