@@ -86,8 +86,9 @@ export const Feed = () => {
     setHasMore(true)
   }
 
+  const itemCount = items.length
   const columnCount = 3
-  const itemCount = hasMore ? items.length + 1 : items.length
+  const rowCount = itemCount / 3 + 1
   const isItemLoaded = (index) => !hasMore || index < items.length
 
   // Render an item or a loading indicator.
@@ -96,12 +97,29 @@ export const Feed = () => {
 
     let content
     if (!isItemLoaded(index)) {
-      content = (
+      content = loading ? (
         <Container>
           <Padding>
-            <div className={styles.container}>
-              <Loading />
-            </div>
+            <Loading />
+          </Padding>
+        </Container>
+      ) : (
+        <Container>
+          <Padding>
+            {hasMore ? (
+              <Button onClick={loadMore}>
+                <Primary>
+                  <strong>Load More</strong>
+                </Primary>
+              </Button>
+            ) : (
+              <p>
+                mint mint mint{' '}
+                <span role="img" aria-labelledby={'Sparkles emoji'}>
+                  ✨
+                </span>
+              </p>
+            )}
           </Padding>
         </Container>
       )
@@ -127,14 +145,13 @@ export const Feed = () => {
           </div>
         </div>
       )}
-
       <AutoSizer>
         {({ height, width }) => (
           <Grid
             columnCount={columnCount}
             columnWidth={230}
             height={height}
-            rowCount={itemCount}
+            rowCount={rowCount}
             rowHeight={300}
             width={width}
           >
@@ -142,33 +159,6 @@ export const Feed = () => {
           </Grid>
         )}
       </AutoSizer>
-
-      {loading ? (
-        <Container>
-          <Padding>
-            <Loading />
-          </Padding>
-        </Container>
-      ) : (
-        <Container>
-          <Padding>
-            {hasMore ? (
-              <Button onClick={loadMore}>
-                <Primary>
-                  <strong>Load More</strong>
-                </Primary>
-              </Button>
-            ) : (
-              <p>
-                mint mint mint{' '}
-                <span role="img" aria-labelledby={'Sparkles emoji'}>
-                  ✨
-                </span>
-              </p>
-            )}
-          </Padding>
-        </Container>
-      )}
     </Page>
   )
 }

@@ -1,4 +1,6 @@
 .container {
+  display: flex;
+  justify-content: center;
 }
 
 .hiccup {
@@ -14,6 +16,4 @@
 }
 
 .child {
-  position: absolute;
-  z-index: 1;
 }

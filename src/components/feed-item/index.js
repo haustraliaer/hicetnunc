@@ -15,9 +15,9 @@ export const FeedItem = ({
 }) => {
   const { mimeType, uri } = token_info.formats[0]
   return (
-    <Container>
-      <div className={styles.hiccup}>
-        <div className={styles.child}>
+    <React.Fragment>
+      <div className={styles.container}>
+        <div className={styles.hiccup}>
           <Button to={`${PATH.OBJKT}/${token_id}`}>
             <div className={styles.container}>
               {renderMediaType({ mimeType, uri: uri.split('//')[1] })}
@@ -35,6 +35,6 @@ export const FeedItem = ({
           feed={true}
         />
       </Padding>
-    </Container>
+    </React.Fragment>
   )
 }
